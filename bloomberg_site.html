@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloomberg Corp. — Redmont</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,700&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --black:#000;
+  --ink:#111;
+  --white:#fff;
+  --bg:#f5f4f0;
+  --bg2:#eeede9;
+  --border:#d4d0c8;
+  --border2:#e8e6e0;
+  --text:#1a1a1a;
+  --muted:#666;
+  --dim:#999;
+  --orange:#ff8c00;
+  --green:#00c853;
+  --red:#e53935;
+  --sans:'Barlow',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--white);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* ── PAGE ROUTING ── */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ── UTILITY BAR ── */
+#utility-bar{
+  background:var(--black);
+  padding:7px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  position:fixed;top:0;left:0;right:0;z-index:200;
+}
+.ub-left{font-family:var(--mono);font-size:10px;color:#444;letter-spacing:.14em;text-transform:uppercase;}
+.ub-right{display:flex;gap:20px;align-items:center;}
+.ub-right a{font-family:var(--mono);font-size:10px;color:#444;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;transition:color .15s;}
+.ub-right a:hover{color:var(--orange);}
+.ub-live{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--green);letter-spacing:.12em;text-transform:uppercase;}
+.live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ── NAV ── */
+#main-nav{
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  padding:0 48px;
+  height:60px;
+  display:flex;justify-content:space-between;align-items:center;
+  position:fixed;top:33px;left:0;right:0;z-index:199;
+  box-shadow:0 1px 0 var(--border);
+}
+.nav-logo{font-family:var(--sans);font-size:20px;font-weight:800;color:var(--black);letter-spacing:-.02em;cursor:pointer;text-decoration:none;}
+.nav-logo span{color:var(--orange);}
+.nav-links{display:flex;gap:0;align-items:stretch;height:60px;}
+.nav-link{
+  font-family:var(--sans);font-size:14px;font-weight:500;color:var(--muted);
+  text-decoration:none;padding:0 18px;display:flex;align-items:center;
+  border-bottom:2px solid transparent;cursor:pointer;
+  transition:color .15s,border-color .15s;
+}
+.nav-link:hover{color:var(--black);}
+.nav-link.active{color:var(--black);border-bottom-color:var(--orange);}
+.nav-cta{
+  background:var(--orange);color:var(--white)!important;
+  padding:0 20px!important;font-weight:700!important;
+  border-bottom:none!important;margin-left:12px;
+  transition:background .15s!important;
+}
+.nav-cta:hover{background:#d97700!important;}
+
+/* ── LAYOUT OFFSET ── */
+.page-content{padding-top:93px;}
+
+/* ── SHARED SECTION ATOMS ── */
+.section{padding:80px 48px;}
+.section-inner{max-width:1160px;margin:0 auto;}
+.section-sm{padding:56px 48px;}
+.section-lg{padding:100px 48px;}
+
+.eyebrow{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;}
+.eyebrow.dim{color:var(--dim);}
+.section-title{font-family:var(--sans);font-size:42px;font-weight:800;color:var(--black);line-height:1.05;letter-spacing:-.025em;margin-bottom:16px;}
+.section-title.lg{font-size:56px;}
+.section-title.sm{font-size:28px;}
+.section-body{font-family:var(--sans);font-size:17px;color:var(--muted);line-height:1.75;max-width:600px;margin-bottom:40px;}
+
+.ruled{border-top:1px solid var(--border);}
+.ruled-bold{border-top:2px solid var(--black);}
+
+/* ── BUTTONS ── */
+.btn{display:inline-block;padding:12px 28px;font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:.03em;text-decoration:none;transition:all .15s;cursor:pointer;border:none;}
+.btn-black{background:var(--black);color:var(--white);}
+.btn-black:hover{background:#222;}
+.btn-orange{background:var(--orange);color:var(--white);}
+.btn-orange:hover{background:#d97700;}
+.btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--black);}
+.btn-outline:hover{background:var(--black);color:var(--white);}
+.btn-outline-white{background:transparent;color:var(--white);border:1.5px solid #333;}
+.btn-outline-white:hover{background:#111;border-color:#111;}
+
+/* ── HERO ── */
+.hero-home{
+  background:var(--black);
+  padding:100px 48px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-home::after{
+  content:'BLOOMBERG';
+  position:absolute;right:-40px;top:50%;transform:translateY(-50%);
+  font-family:var(--sans);font-size:200px;font-weight:900;
+  color:#0a0a0a;letter-spacing:-.05em;white-space:nowrap;
+  pointer-events:none;user-select:none;
+}
+.hero-home-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 340px;gap:80px;align-items:center;position:relative;z-index:1;}
+.hero-eyebrow{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.28em;text-transform:uppercase;margin-bottom:20px;}
+.hero-headline{font-family:var(--sans);font-size:64px;font-weight:900;color:var(--white);line-height:.98;letter-spacing:-.03em;margin-bottom:28px;}
+.hero-headline em{font-style:normal;color:var(--orange);}
+.hero-body{font-family:var(--sans);font-size:18px;color:#777;line-height:1.7;margin-bottom:36px;max-width:540px;}
+.hero-actions{display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.hero-note{font-family:var(--mono);font-size:11px;color:#444;letter-spacing:.1em;margin-top:24px;}
+
+/* Hero card */
+.hero-card{background:#0d0d0d;border:1px solid #1c1c1c;padding:0;}
+.hero-card-head{padding:14px 20px;border-bottom:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:center;}
+.hch-title{font-family:var(--mono);font-size:9px;color:var(--orange);letter-spacing:.22em;text-transform:uppercase;}
+.hch-live{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--green);letter-spacing:.14em;text-transform:uppercase;}
+.hero-card-rows{padding:0 20px;}
+.hcr{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid #141414;}
+.hcr:last-child{border-bottom:none;}
+.hcr-label{font-family:var(--mono);font-size:10px;color:#3a3a3a;letter-spacing:.12em;text-transform:uppercase;}
+.hcr-val{font-family:var(--mono);font-size:13px;color:var(--white);}
+.hcr-val.orange{color:var(--orange);}
+.hcr-val.green{color:var(--green);}
+.hcr-val.red{color:var(--red);}
+.hero-card-foot{padding:14px 20px;border-top:1px solid #1a1a1a;}
+.hcf-text{font-family:var(--mono);font-size:9px;color:#2a2a2a;letter-spacing:.1em;line-height:1.8;}
+
+/* ── STATS STRIP ── */
+.stats-strip{background:var(--white);border-bottom:1px solid var(--border);}
+.stats-strip-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);}
+.stat-block{padding:36px 32px;border-right:1px solid var(--border);}
+.stat-block:last-child{border-right:none;}
+.stat-num{font-family:var(--sans);font-size:52px;font-weight:900;color:var(--black);line-height:1;letter-spacing:-.03em;margin-bottom:6px;}
+.stat-num span{color:var(--orange);}
+.stat-label{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;}
+.stat-sub{font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* ── TICKER TAPE ── */
+.ticker-strip{background:var(--orange);padding:10px 0;overflow:hidden;position:relative;}
+.ticker-track{display:flex;gap:0;animation:scroll-left 30s linear infinite;white-space:nowrap;}
+@keyframes scroll-left{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--black);padding:0 32px;letter-spacing:.1em;display:flex;gap:8px;align-items:center;}
+.ticker-sep{opacity:.3;}
+
+/* ── SUBSIDIARIES GRID ── */
+.subs-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border);}
+.sub-card{
+  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:40px 36px;display:flex;flex-direction:column;gap:14px;
+  cursor:pointer;text-decoration:none;transition:background .15s;
+  position:relative;
+}
+.sub-card:hover{background:var(--bg);}
+.sub-card.live::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);}
+.sub-card.dim-card{cursor:default;background:var(--bg);}
+.sub-card.dim-card:hover{background:var(--bg);}
+.sub-tag{font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--orange);}
+.sub-card.dim-card .sub-tag{color:var(--dim);}
+.sub-name{font-family:var(--sans);font-size:22px;font-weight:800;color:var(--black);line-height:1.1;letter-spacing:-.01em;}
+.sub-card.dim-card .sub-name{color:var(--muted);}
+.sub-desc{font-family:var(--sans);font-size:14px;color:var(--muted);line-height:1.7;flex:1;}
+.sub-footer{display:flex;justify-content:space-between;align-items:flex-end;padding-top:16px;border-top:1px solid var(--border2);margin-top:auto;}
+.sub-price{font-family:var(--mono);font-size:12px;color:var(--black);font-weight:500;}
+.sub-card.dim-card .sub-price{color:var(--dim);}
+.sub-status{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;}
+.status-live{color:var(--green);}
+.status-soon{color:var(--dim);}
+.status-internal{color:var(--dim);}
+.sub-arrow{font-size:20px;color:var(--orange);transition:transform .2s;}
+.sub-card:hover .sub-arrow{transform:translateX(4px);}
+
+/* ── WHO SECTION (dark) ── */
+.who-section{background:var(--black);padding:80px 48px;}
+.who-inner{max-width:1160px;margin:0 auto;}
+.who-eyebrow{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;}
+.who-title{font-family:var(--sans);font-size:42px;font-weight:800;color:var(--white);line-height:1.05;letter-spacing:-.025em;margin-bottom:48px;}
+.who-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #1c1c1c;border-left:1px solid #1c1c1c;}
+.who-card{border-right:1px solid #1c1c1c;border-bottom:1px solid #1c1c1c;padding:36px 32px;}
+.who-num{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.2em;margin-bottom:16px;}
+.who-card-title{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--white);margin-bottom:12px;}
+.who-card-body{font-family:var(--sans);font-size:14px;color:#555;line-height:1.75;}
+
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);margin-top:48px;}
+.pricing-card{padding:40px 36px;border-right:1px solid var(--border);display:flex;flex-direction:column;position:relative;}
+.pricing-card:last-child{border-right:none;}
+.pricing-card.featured{background:var(--black);}
+.pricing-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--orange);}
+.pricing-tier{font-family:var(--mono);font-size:9px;color:var(--orange);letter-spacing:.22em;text-transform:uppercase;margin-bottom:8px;}
+.pricing-name{font-family:var(--sans);font-size:26px;font-weight:800;color:var(--black);margin-bottom:0;letter-spacing:-.01em;}
+.pricing-card.featured .pricing-name{color:var(--white);}
+.pricing-price{font-family:var(--sans);font-size:40px;font-weight:900;color:var(--black);letter-spacing:-.03em;margin:20px 0 4px;}
+.pricing-card.featured .pricing-price{color:var(--white);}
+.pricing-cadence{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:28px;}
+.pricing-rule{height:1px;background:var(--border2);margin-bottom:24px;}
+.pricing-card.featured .pricing-rule{background:#1a1a1a;}
+.pricing-features{list-style:none;display:flex;flex-direction:column;gap:10px;flex:1;margin-bottom:28px;}
+.pricing-features li{font-family:var(--sans);font-size:14px;color:var(--muted);display:flex;gap:10px;line-height:1.5;align-items:flex-start;}
+.pricing-card.featured .pricing-features li{color:#666;}
+.pricing-features li::before{content:'—';color:var(--orange);font-family:var(--mono);font-size:12px;flex-shrink:0;margin-top:1px;}
+.pricing-btn{display:block;text-align:center;padding:13px;font-family:var(--sans);font-size:14px;font-weight:700;text-decoration:none;transition:all .15s;border:1.5px solid var(--border);color:var(--black);background:transparent;cursor:pointer;}
+.pricing-btn:hover{background:var(--black);color:var(--white);border-color:var(--black);}
+.pricing-card.featured .pricing-btn{background:var(--orange);color:var(--white);border-color:var(--orange);}
+.pricing-card.featured .pricing-btn:hover{background:#d97700;border-color:#d97700;}
+
+/* ── CONTACT STRIP ── */
+.contact-strip{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:60px 48px;}
+.contact-inner{max-width:1160px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:40px;}
+.contact-text{max-width:520px;}
+.contact-eyebrow{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px;}
+.contact-title{font-family:var(--sans);font-size:32px;font-weight:800;color:var(--black);line-height:1.1;letter-spacing:-.02em;margin-bottom:12px;}
+.contact-body{font-family:var(--sans);font-size:15px;color:var(--muted);line-height:1.7;}
+.contact-actions{display:flex;flex-direction:column;gap:12px;align-items:flex-end;flex-shrink:0;}
+.contact-sub{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.1em;text-decoration:none;transition:color .15s;}
+.contact-sub:hover{color:var(--black);}
+
+/* ── FOOTER ── */
+footer{background:var(--black);padding:60px 48px 40px;border-top:3px solid var(--orange);}
+.footer-inner{max-width:1160px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:300px 1fr 1fr 1fr;gap:48px;margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid #161616;}
+.footer-brand{font-family:var(--sans);font-size:22px;font-weight:900;color:var(--white);letter-spacing:-.02em;margin-bottom:12px;}
+.footer-brand span{color:var(--orange);}
+.footer-desc{font-family:var(--sans);font-size:13px;color:#3a3a3a;line-height:1.8;}
+.footer-col-title{font-family:var(--mono);font-size:9px;color:var(--orange);letter-spacing:.22em;text-transform:uppercase;margin-bottom:16px;}
+.footer-links-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-links-list a{font-family:var(--sans);font-size:13px;color:#3a3a3a;text-decoration:none;transition:color .15s;}
+.footer-links-list a:hover{color:var(--white);}
+.footer-links-list span{font-family:var(--sans);font-size:13px;color:#222;cursor:default;}
+.footer-disclaimer{font-family:var(--mono);font-size:10px;color:#222;line-height:2.1;letter-spacing:.02em;margin-bottom:24px;}
+.footer-disclaimer b{color:#333;font-weight:500;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:20px;border-top:1px solid #0f0f0f;}
+.footer-copy{font-family:var(--mono);font-size:10px;color:#222;letter-spacing:.1em;}
+.footer-bottom-links{display:flex;gap:20px;}
+.footer-bottom-links a{font-family:var(--mono);font-size:10px;color:#222;text-decoration:none;letter-spacing:.08em;transition:color .15s;}
+.footer-bottom-links a:hover{color:#555;}
+
+/* ── PRODUCT PAGE HERO ── */
+.product-hero{background:var(--black);padding:80px 48px 60px;border-bottom:1px solid #1a1a1a;}
+.product-hero-inner{max-width:1160px;margin:0 auto;}
+.product-hero-eyebrow{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px;display:flex;gap:16px;align-items:center;}
+.product-hero-eyebrow .sep{color:#333;}
+.product-hero-headline{font-family:var(--sans);font-size:56px;font-weight:900;color:var(--white);line-height:1;letter-spacing:-.03em;margin-bottom:20px;}
+.product-hero-headline span{color:var(--orange);}
+.product-hero-body{font-family:var(--sans);font-size:18px;color:#666;line-height:1.7;max-width:600px;margin-bottom:36px;}
+.product-hero-actions{display:flex;gap:14px;align-items:center;}
+.product-hero-price{font-family:var(--mono);font-size:12px;color:#333;letter-spacing:.12em;text-transform:uppercase;}
+
+/* ── FEATURE GRID ── */
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border);}
+.feature-card{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 32px;}
+.feature-card-num{font-family:var(--mono);font-size:9px;color:var(--orange);letter-spacing:.2em;margin-bottom:12px;}
+.feature-card-title{font-family:var(--sans);font-size:18px;font-weight:700;color:var(--black);margin-bottom:10px;}
+.feature-card-body{font-family:var(--sans);font-size:14px;color:var(--muted);line-height:1.75;}
+
+/* ── FEATURE ROW (alternating) ── */
+.feature-row{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.feature-row.flip{direction:rtl;}
+.feature-row.flip>*{direction:ltr;}
+.feature-row-text{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;gap:16px;}
+.feature-row-visual{background:var(--black);padding:48px;display:flex;align-items:center;justify-content:center;min-height:320px;}
+
+/* dark feature row */
+.feature-row.dark .feature-row-text{background:var(--black);}
+.feature-row.dark .feature-row-text .feature-card-title{color:var(--white);}
+.feature-row.dark .feature-row-text .feature-card-body{color:#555;}
+.feature-row.dark .feature-row-text .eyebrow{color:var(--orange);}
+
+/* ── PAGES LIST ── */
+.pages-grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border);}
+.page-card{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 24px;cursor:pointer;}
+.page-card:hover{background:var(--bg);}
+.page-card-key{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.18em;margin-bottom:8px;}
+.page-card-name{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--black);margin-bottom:6px;}
+.page-card-desc{font-family:var(--sans);font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* ── TERMINAL MOCKUP ── */
+.terminal-mock{background:#0a0a0a;border:1px solid #1c1c1c;font-family:var(--mono);width:100%;}
+.tm-bar{background:#111;padding:8px 12px;border-bottom:1px solid #1a1a1a;display:flex;gap:16px;align-items:center;overflow-x:auto;}
+.tm-tab{font-size:9px;color:#333;letter-spacing:.15em;text-transform:uppercase;white-space:nowrap;}
+.tm-tab.active{color:var(--orange);}
+.tm-body{padding:16px;}
+.tm-row{display:flex;gap:24px;padding:6px 0;border-bottom:1px solid #0e0e0e;}
+.tm-row:last-child{border-bottom:none;}
+.tm-ticker{font-size:11px;color:#00e5ff;width:60px;flex-shrink:0;}
+.tm-price{font-size:11px;color:var(--white);width:70px;}
+.tm-chg-pos{font-size:11px;color:var(--green);}
+.tm-chg-neg{font-size:11px;color:var(--red);}
+.tm-vol{font-size:10px;color:#333;}
+.tm-sharpe{font-size:10px;color:#444;}
+
+/* ── API MOCKUP ── */
+.api-mock{background:#0a0a0a;border:1px solid #1c1c1c;font-family:var(--mono);padding:24px;}
+.api-comment{color:#333;font-size:11px;margin-bottom:4px;}
+.api-method{color:var(--orange);font-size:12px;}
+.api-path{color:var(--white);font-size:12px;}
+.api-response{margin-top:16px;border-top:1px solid #1a1a1a;padding-top:16px;}
+.api-key{color:#00e5ff;font-size:11px;}
+.api-val{color:var(--green);font-size:11px;}
+.api-val.str{color:#e0a060;}
+.api-val.num{color:var(--green);}
+
+/* ── ABOUT PAGE ── */
+.about-split{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);}
+.about-text{padding:64px 56px;border-right:1px solid var(--border);}
+.about-stat-block{padding:64px 56px;display:flex;flex-direction:column;justify-content:center;gap:32px;}
+.about-stat-item{border-bottom:1px solid var(--border2);padding-bottom:24px;}
+.about-stat-item:last-child{border-bottom:none;padding-bottom:0;}
+.about-stat-num{font-family:var(--sans);font-size:44px;font-weight:900;color:var(--black);letter-spacing:-.03em;line-height:1;}
+.about-stat-num span{color:var(--orange);}
+.about-stat-label{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.18em;text-transform:uppercase;margin-top:6px;}
+
+/* ── COMING SOON CARD ── */
+.coming-soon-hero{
+  background:var(--black);padding:120px 48px;text-align:center;
+}
+.cs-eyebrow{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.25em;text-transform:uppercase;margin-bottom:20px;}
+.cs-headline{font-family:var(--sans);font-size:72px;font-weight:900;color:var(--white);letter-spacing:-.04em;line-height:1;margin-bottom:20px;}
+.cs-body{font-family:var(--sans);font-size:18px;color:#555;max-width:480px;margin:0 auto 40px;line-height:1.7;}
+
+/* ── NEWS / ORIGINALS ── */
+.article-list{display:flex;flex-direction:column;border-top:2px solid var(--black);}
+.article-row{display:grid;grid-template-columns:80px 1fr 160px;gap:24px;align-items:center;padding:24px 0;border-bottom:1px solid var(--border2);cursor:pointer;}
+.article-row:hover .article-title{text-decoration:underline;}
+.article-date{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.1em;}
+.article-title{font-family:var(--sans);font-size:17px;font-weight:600;color:var(--black);line-height:1.4;}
+.article-tag{font-family:var(--mono);font-size:9px;color:var(--orange);letter-spacing:.18em;text-transform:uppercase;text-align:right;}
+
+/* ── COMPLIANCE NOTE ── */
+.compliance-note{background:var(--bg2);border:1px solid var(--border);padding:24px 32px;margin-top:24px;}
+.compliance-note-title{font-family:var(--mono);font-size:10px;color:var(--orange);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px;}
+.compliance-note-body{font-family:var(--mono);font-size:11px;color:var(--muted);line-height:2;letter-spacing:.02em;}
+
+/* ── LABS ── */
+.labs-grid{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--border);border-left:1px solid var(--border);}
+.labs-card{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:40px 36px;}
+.labs-card-tag{font-family:var(--mono);font-size:9px;color:var(--orange);letter-spacing:.2em;text-transform:uppercase;margin-bottom:12px;}
+.labs-card-title{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--black);margin-bottom:10px;}
+.labs-card-body{font-family:var(--sans);font-size:14px;color:var(--muted);line-height:1.75;}
+
+/* ── RESPONSIVE HELPERS ── */
+.flex-row{display:flex;gap:16px;align-items:center;}
+.flex-between{display:flex;justify-content:space-between;align-items:center;}
+.mt8{margin-top:8px;}.mt16{margin-top:16px;}.mt24{margin-top:24px;}.mt32{margin-top:32px;}.mt48{margin-top:48px;}
+.mb8{margin-bottom:8px;}.mb16{margin-bottom:16px;}.mb24{margin-bottom:24px;}.mb32{margin-bottom:32px;}.mb48{margin-bottom:48px;}
+
+.dark-section{background:var(--black);}
+.dark-section .section-title{color:var(--white);}
+.dark-section .section-body{color:#555;}
+.dark-section .eyebrow{color:var(--orange);}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;padding:14px 48px;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;}
+.breadcrumb a{color:var(--dim);text-decoration:none;cursor:pointer;transition:color .15s;}
+.breadcrumb a:hover{color:var(--black);}
+.breadcrumb .sep{color:var(--border);}
+.breadcrumb .current{color:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- UTILITY BAR -->
+<div id="utility-bar">
+  <div class="ub-left">Bloomberg Corp. — Registered, Commonwealth of Redmont</div>
+  <div class="ub-right">
+    <div class="ub-live"><div class="live-dot"></div>NER + TSE Live</div>
+    <a href="https://bt-retail.up.railway.app" target="_blank">Terminal Login</a>
+    <a onclick="nav('contact')">Contact</a>
+  </div>
+</div>
+
+<!-- MAIN NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" onclick="nav('home')">Bloomberg<span>.</span></a>
+  <div class="nav-links">
+    <a class="nav-link" onclick="nav('products')">Products</a>
+    <a class="nav-link" onclick="nav('terminal')">Terminal</a>
+    <a class="nav-link" onclick="nav('enterprise')">Enterprise</a>
+    <a class="nav-link" onclick="nav('atlas')">Atlas API</a>
+    <a class="nav-link" onclick="nav('news')">News</a>
+    <a class="nav-link" onclick="nav('about')">About</a>
+    <a class="nav-link nav-cta" href="https://bt-retail.up.railway.app" target="_blank">Open Terminal</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════════════════ -->
+<div id="page-home" class="page page-content">
+
+  <!-- HERO -->
+  <section class="hero-home">
+    <div class="hero-home-inner">
+      <div>
+        <div class="hero-eyebrow">Bloomberg Corp. — Redmont Division</div>
+        <h1 class="hero-headline">
+          The infrastructure<br>
+          DC markets<br>
+          <em>run on.</em>
+        </h1>
+        <p class="hero-body">Bloomberg Corp. builds and operates the financial data, analytics, media, and trading infrastructure serving the NER and TSE exchanges across the Commonwealth of Redmont.</p>
+        <div class="hero-actions">
+          <a onclick="nav('products')" class="btn btn-orange">Explore products</a>
+          <a onclick="nav('terminal')" class="btn btn-outline-white">Bloomberg Terminal →</a>
+        </div>
+        <div class="hero-note">R$2,500 / mo · R$10,000 / mo · R$12,500 / mo — across all tiers</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-head">
+          <div class="hch-title">Market Snapshot</div>
+          <div class="hch-live"><div class="live-dot"></div>Live</div>
+        </div>
+        <div class="hero-card-rows">
+          <div class="hcr"><span class="hcr-label">SRI</span><span class="hcr-val red">R$19.08 −37.50%</span></div>
+          <div class="hcr"><span class="hcr-label">BB</span><span class="hcr-val green">R$20.45 +31.07%</span></div>
+          <div class="hcr"><span class="hcr-label">RTG</span><span class="hcr-val green">R$23.00 +4.55%</span></div>
+          <div class="hcr"><span class="hcr-label">GCC</span><span class="hcr-val red">R$2.00 −8.57%</span></div>
+          <div class="hcr"><span class="hcr-label">NTR</span><span class="hcr-val">R$125.00 +0.00%</span></div>
+          <div class="hcr"><span class="hcr-label">NER-VIX</span><span class="hcr-val orange">318.99</span></div>
+        </div>
+        <div class="hero-card-foot">
+          <div class="hcf-text">Data via Bloomberg Terminal · NER Exchange<br>17 securities tracked · NER + TSE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER TAPE -->
+  <div class="ticker-strip">
+    <div class="ticker-track">
+      <div class="ticker-item">SRI <span class="ticker-sep">|</span> R$19.08 <span style="opacity:.5">−37.50%</span></div>
+      <div class="ticker-item">BB <span class="ticker-sep">|</span> R$20.45 <span style="opacity:.5">+31.07%</span></div>
+      <div class="ticker-item">RTG <span class="ticker-sep">|</span> R$23.00 <span style="opacity:.5">+4.55%</span></div>
+      <div class="ticker-item">GCC <span class="ticker-sep">|</span> R$2.00 <span style="opacity:.5">−8.57%</span></div>
+      <div class="ticker-item">NTR <span class="ticker-sep">|</span> R$125.00 <span style="opacity:.5">+0.00%</span></div>
+      <div class="ticker-item">RDS <span class="ticker-sep">|</span> R$11.84 <span style="opacity:.5">+0.72%</span></div>
+      <div class="ticker-item">ECO <span class="ticker-sep">|</span> R$14.46 <span style="opacity:.5">+1.84%</span></div>
+      <div class="ticker-item">NER-VIX <span class="ticker-sep">|</span> 318.99</div>
+      <!-- duplicate for seamless scroll -->
+      <div class="ticker-item">SRI <span class="ticker-sep">|</span> R$19.08 <span style="opacity:.5">−37.50%</span></div>
+      <div class="ticker-item">BB <span class="ticker-sep">|</span> R$20.45 <span style="opacity:.5">+31.07%</span></div>
+      <div class="ticker-item">RTG <span class="ticker-sep">|</span> R$23.00 <span style="opacity:.5">+4.55%</span></div>
+      <div class="ticker-item">GCC <span class="ticker-sep">|</span> R$2.00 <span style="opacity:.5">−8.57%</span></div>
+      <div class="ticker-item">NTR <span class="ticker-sep">|</span> R$125.00 <span style="opacity:.5">+0.00%</span></div>
+      <div class="ticker-item">RDS <span class="ticker-sep">|</span> R$11.84 <span style="opacity:.5">+0.72%</span></div>
+      <div class="ticker-item">ECO <span class="ticker-sep">|</span> R$14.46 <span style="opacity:.5">+1.84%</span></div>
+      <div class="ticker-item">NER-VIX <span class="ticker-sep">|</span> 318.99</div>
+    </div>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stats-strip-inner">
+      <div class="stat-block">
+        <div class="stat-num">14<span>.</span></div>
+        <div class="stat-label">Terminal pages</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">17<span>.</span></div>
+        <div class="stat-label">Securities tracked</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">6<span>.</span></div>
+        <div class="stat-label">Bloomberg divisions</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">2<span>.</span></div>
+        <div class="stat-label">Exchanges — NER + TSE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBSIDIARIES -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="eyebrow">Our divisions</div>
+      <h2 class="section-title">Six subsidiaries.<br>One mission.</h2>
+      <p class="section-body">Bloomberg Corp. operates across data, analytics, media, engineering, and publishing — each division purpose-built for DC's financial ecosystem.</p>
+      <div class="subs-grid">
+        <a class="sub-card live" onclick="nav('terminal')">
+          <div class="sub-tag">Bloomberg Terminal</div>
+          <div class="sub-name">Professional Trading Terminal</div>
+          <div class="sub-desc">Institutional-grade trading interface for NER and TSE. 14 pages of live data, order execution, backtesting, Monte Carlo, holder intelligence, and more.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">R$2,500 / month</div><div class="sub-status status-live mt8">● Live</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('enterprise')">
+          <div class="sub-tag">Bloomberg Enterprise</div>
+          <div class="sub-name">Portfolio Management Suite</div>
+          <div class="sub-desc">Multi-portfolio management, client CMS, mandate tracking, firm dashboard, morning brief, compliance monitoring, and billing — built for portfolio managers.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">R$10,000 / month</div><div class="sub-status status-live mt8">● Live</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('atlas')">
+          <div class="sub-tag">Bloomberg Atlas</div>
+          <div class="sub-name">Raw Market Data API</div>
+          <div class="sub-desc">Programmatic access to NER and TSE data via REST API. Tick data, OHLCV, order book, shareholder records, and trade history for developers and quants.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">R$12,500 / month</div><div class="sub-status status-live mt8">● Live</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('news')">
+          <div class="sub-tag">Bloomberg News</div>
+          <div class="sub-name">Daily Market Intelligence</div>
+          <div class="sub-desc">Bloomberg's editorial division. Daily market recaps, breaking NER and TSE news, earnings coverage, and macroeconomic commentary on the Commonwealth of Redmont.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">Free to read</div><div class="sub-status status-live mt8">● Live</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('originals')">
+          <div class="sub-tag">Bloomberg Originals</div>
+          <div class="sub-name">Long-Form Research</div>
+          <div class="sub-desc">In-depth company deep-dives, sector analysis, market structure essays, and investigative financial journalism on DC's most significant securities and events.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">Free to read</div><div class="sub-status status-live mt8">● Live</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <div class="sub-card dim-card">
+          <div class="sub-tag">Bloomberg Labs</div>
+          <div class="sub-name">Engineering Division</div>
+          <div class="sub-desc">The internal engineering arm that designs, builds, and maintains all Bloomberg products — the Terminal, Enterprise suite, Atlas API, and all underlying infrastructure.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">Internal division</div><div class="sub-status status-internal mt8">◌ Not public-facing</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <div class="who-section">
+    <div class="who-inner">
+      <div class="who-eyebrow">Who we serve</div>
+      <h2 class="who-title">Built for everyone serious about DC markets.</h2>
+      <div class="who-grid">
+        <div class="who-card">
+          <div class="who-num">01 —</div>
+          <div class="who-card-title">Active Traders</div>
+          <div class="who-card-body">Individual traders who need real-time NER and TSE data, order execution, technical analysis, and risk tools without switching platforms. Bloomberg Terminal brings everything into one place.</div>
+        </div>
+        <div class="who-card">
+          <div class="who-num">02 —</div>
+          <div class="who-card-title">Portfolio Managers</div>
+          <div class="who-card-body">Professionals managing capital on behalf of clients. Bloomberg Enterprise provides multi-portfolio infrastructure, client management, mandate compliance, and reporting tools that institutional PMs require.</div>
+        </div>
+        <div class="who-card">
+          <div class="who-num">03 —</div>
+          <div class="who-card-title">Developers & Quants</div>
+          <div class="who-card-body">Builders who need raw market data to power their own applications, models, or strategies. Bloomberg Atlas delivers structured API access without requiring the full terminal interface.</div>
+        </div>
+        <div class="who-card">
+          <div class="who-num">04 —</div>
+          <div class="who-card-title">Researchers & Analysts</div>
+          <div class="who-card-body">Those who need structured insight into DC market dynamics. Bloomberg News and Bloomberg Originals publish the analysis, data journalism, and deep research that informs serious market participants.</div>
+        </div>
+        <div class="who-card">
+          <div class="who-num">05 —</div>
+          <div class="who-card-title">Trading Firms</div>
+          <div class="who-card-body">Multi-client operations running capital across several portfolios simultaneously. Bloomberg Enterprise scales to full firm infrastructure — compliance, billing, client portal, morning briefs, and cross-portfolio risk monitoring.</div>
+        </div>
+        <div class="who-card">
+          <div class="who-num">06 —</div>
+          <div class="who-card-title">New DC Participants</div>
+          <div class="who-card-body">Players new to DC's markets who want to understand the exchange, the securities, and how capital flows. Bloomberg News and the Terminal's market pages provide accessible entry points to the full picture.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section class="section" style="background:var(--bg);">
+    <div class="section-inner">
+      <div class="eyebrow">Pricing</div>
+      <h2 class="section-title">Transparent, tier-based pricing.</h2>
+      <p class="section-body">All prices in Redmont Dollars (R$). Billing is monthly — consistent with the DC economic cycle. No hidden fees.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-tier">Bloomberg Terminal</div>
+          <div class="pricing-name">Retail</div>
+          <div class="pricing-price">R$2,500</div>
+          <div class="pricing-cadence">per month</div>
+          <div class="pricing-rule"></div>
+          <ul class="pricing-features">
+            <li>14 terminal pages</li>
+            <li>Live NER + TSE data</li>
+            <li>Full order book + execution</li>
+            <li>Backtest engine + Monte Carlo (1,000 sims)</li>
+            <li>Holder intelligence + HHI</li>
+            <li>Price alerts + desktop notifications</li>
+            <li>Portfolio management</li>
+            <li>Screener + heatmap + liquidity</li>
+          </ul>
+          <a href="https://bt-retail.up.railway.app" target="_blank" class="pricing-btn">Get access →</a>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-tier">Bloomberg Enterprise</div>
+          <div class="pricing-name">Enterprise</div>
+          <div class="pricing-price">R$10,000</div>
+          <div class="pricing-cadence">per month</div>
+          <div class="pricing-rule"></div>
+          <ul class="pricing-features">
+            <li>Everything in Retail</li>
+            <li>Multi-portfolio management</li>
+            <li>Client CMS + mandate tracking</li>
+            <li>Firm dashboard + morning brief</li>
+            <li>Compliance monitoring</li>
+            <li>Client portal generation</li>
+            <li>Billing + revenue tracking</li>
+            <li>19 portfolio sub-tabs</li>
+          </ul>
+          <a onclick="nav('contact')" class="pricing-btn">Contact us →</a>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Bloomberg Atlas</div>
+          <div class="pricing-name">API Access</div>
+          <div class="pricing-price">R$12,500</div>
+          <div class="pricing-cadence">per month</div>
+          <div class="pricing-rule"></div>
+          <ul class="pricing-features">
+            <li>Full NER + TSE data API</li>
+            <li>Tick data + OHLCV</li>
+            <li>Order book snapshots</li>
+            <li>Shareholder + holder data</li>
+            <li>Trade history feeds</li>
+            <li>REST API access</li>
+            <li>API proxy layer</li>
+            <li>Developer documentation</li>
+          </ul>
+          <a onclick="nav('contact')" class="pricing-btn">Contact us →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <div class="contact-strip" id="contact-home">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="contact-eyebrow">Get in touch</div>
+        <div class="contact-title">Ready to get started?</div>
+        <div class="contact-body">Reach us on Discord. For Terminal access, DM <strong>@beeple02</strong>. For Enterprise and Atlas enquiries, include a brief description of your use case.</div>
+      </div>
+      <div class="contact-actions">
+        <a href="https://bt-retail.up.railway.app" target="_blank" class="btn btn-orange">Open Terminal →</a>
+        <a class="contact-sub">DM @beeple02 on Discord</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div id="footer-home"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: PRODUCTS
+═══════════════════════════════════════════════════ -->
+<div id="page-products" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span><span class="current">Products</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp. <span class="sep">·</span> All Products</div>
+      <h1 class="product-hero-headline">Everything <span>Bloomberg</span> builds.</h1>
+      <p class="product-hero-body">Six divisions, each purpose-built for a specific layer of DC's financial ecosystem. Three are live and open for access today.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="subs-grid">
+        <a class="sub-card live" onclick="nav('terminal')">
+          <div class="sub-tag">Bloomberg Terminal · Live</div>
+          <div class="sub-name">Professional Trading Terminal</div>
+          <div class="sub-desc">The complete institutional trading interface for NER and TSE. 14 pages covering live prices, order book, MACD, RSI, backtest, Monte Carlo, holder intel, heatmap, liquidity, screener, alerts, and more.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">R$2,500 / month</div><div class="sub-status status-live mt8">● Live now</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('enterprise')">
+          <div class="sub-tag">Bloomberg Enterprise · Live</div>
+          <div class="sub-name">Multi-Portfolio Management Suite</div>
+          <div class="sub-desc">Built for portfolio managers and trading firms. Manage multiple client portfolios, full CMS with client mandate tracking, firm-level analytics, morning brief, compliance monitoring, and client portal generation.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">R$10,000 / month</div><div class="sub-status status-live mt8">● Live now</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('atlas')">
+          <div class="sub-tag">Bloomberg Atlas · Live</div>
+          <div class="sub-name">Raw Market Data API</div>
+          <div class="sub-desc">Direct programmatic access to all NER and TSE market data via REST API. Tick data, OHLCV, full order book, shareholder records, trade history — for developers and quants who build on top of Bloomberg data.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">R$12,500 / month</div><div class="sub-status status-live mt8">● Live now</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('news')">
+          <div class="sub-tag">Bloomberg News · Live</div>
+          <div class="sub-name">Daily Market Intelligence</div>
+          <div class="sub-desc">Bloomberg's editorial division covering the NER and TSE exchanges. Daily market recaps, breaking news, earnings coverage, and macroeconomic commentary across the Commonwealth of Redmont financial system.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">Free to read</div><div class="sub-status status-live mt8">● Live now</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('originals')">
+          <div class="sub-tag">Bloomberg Originals · Live</div>
+          <div class="sub-name">Long-Form Research & Analysis</div>
+          <div class="sub-desc">Bloomberg's long-form publishing arm. In-depth company deep-dives, sector analysis, market structure essays, and investigative financial journalism covering DC's most significant securities, holders, and economic dynamics.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">Free to read</div><div class="sub-status status-live mt8">● Live now</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+        <a class="sub-card live" onclick="nav('labs')">
+          <div class="sub-tag">Bloomberg Labs</div>
+          <div class="sub-name">Software Engineering Division</div>
+          <div class="sub-desc">The internal engineering arm that designs, builds, and maintains all Bloomberg products. Labs is responsible for the Terminal, Enterprise suite, Atlas API, and all infrastructure powering Bloomberg Corp.'s DC operations.</div>
+          <div class="sub-footer">
+            <div><div class="sub-price">Internal division</div><div class="sub-status status-internal mt8">◌ Internal</div></div>
+            <div class="sub-arrow">→</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+  <div id="footer-products"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: TERMINAL
+═══════════════════════════════════════════════════ -->
+<div id="page-terminal" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span>
+    <a onclick="nav('products')">Products</a><span class="sep">/</span>
+    <span class="current">Bloomberg Terminal</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp. <span class="sep">·</span> Bloomberg Terminal</div>
+      <h1 class="product-hero-headline">The terminal <span>DC has been<br>waiting for.</span></h1>
+      <p class="product-hero-body">Institutional-grade trading interface covering NER and TSE. Real-time prices, full order execution, advanced analytics, and live portfolio management — 14 pages, one terminal.</p>
+      <div class="product-hero-actions">
+        <a href="https://bt-retail.up.railway.app" target="_blank" class="btn btn-orange">Open Terminal →</a>
+        <a onclick="nav('contact')" class="btn btn-outline-white">Contact sales</a>
+      </div>
+      <div class="product-hero-price mt24">R$2,500 / month · NER + TSE · 17 securities · Live data</div>
+    </div>
+  </section>
+
+  <!-- LIVE MOCKUP -->
+  <section class="section" style="background:var(--bg);">
+    <div class="section-inner">
+      <div class="eyebrow">F2 · Ticker — Live data preview</div>
+      <h2 class="section-title sm mb24">What the terminal actually shows you.</h2>
+      <div class="terminal-mock">
+        <div class="tm-bar">
+          <span class="tm-tab">F1 MARKET</span>
+          <span class="tm-tab active">F2 TICKER</span>
+          <span class="tm-tab">F3 PORTFOLIO</span>
+          <span class="tm-tab">F4 ORDERS</span>
+          <span class="tm-tab">F5 BACKTEST</span>
+          <span class="tm-tab">F6 COMPARE</span>
+          <span class="tm-tab">F8 HEATMAP</span>
+          <span class="tm-tab">F10 LIQUIDITY</span>
+          <span class="tm-tab">F11 HOLDERS</span>
+          <span class="tm-tab">F12 SCREENER</span>
+        </div>
+        <div class="tm-body">
+          <div class="tm-row">
+            <span class="tm-ticker">SRI</span>
+            <span class="tm-price">R$19.08</span>
+            <span class="tm-chg-neg">−37.50%</span>
+            <span class="tm-vol">VOL: 82</span>
+            <span class="tm-sharpe">SHARPE: −1.08 · MAXDD: −37.5% · ATR: 2.34</span>
+          </div>
+          <div class="tm-row">
+            <span class="tm-ticker">BB</span>
+            <span class="tm-price">R$20.45</span>
+            <span class="tm-chg-pos">+31.07%</span>
+            <span class="tm-vol">VOL: 360</span>
+            <span class="tm-sharpe">SHARPE: 0.42 · MAXDD: −12.1% · ATR: 1.89</span>
+          </div>
+          <div class="tm-row">
+            <span class="tm-ticker">RTG</span>
+            <span class="tm-price">R$23.00</span>
+            <span class="tm-chg-pos">+4.55%</span>
+            <span class="tm-vol">VOL: 438</span>
+            <span class="tm-sharpe">SHARPE: 7.94 · MAXDD: 0.0% · ATR: 0.92</span>
+          </div>
+          <div class="tm-row">
+            <span class="tm-ticker">GCC</span>
+            <span class="tm-price">R$2.00</span>
+            <span class="tm-chg-neg">−8.57%</span>
+            <span class="tm-vol">VOL: 614</span>
+            <span class="tm-sharpe">SHARPE: −5.62 · MAXDD: −94.7% · ATR: 0.44</span>
+          </div>
+          <div class="tm-row">
+            <span class="tm-ticker">NTR</span>
+            <span class="tm-price">R$125.00</span>
+            <span class="tm-chg-pos">+0.00%</span>
+            <span class="tm-vol">VOL: 108</span>
+            <span class="tm-sharpe">SHARPE: 0.00 · MAXDD: 0.0% · ATR: 0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALL 14 PAGES -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="eyebrow">14 pages · Full coverage</div>
+      <h2 class="section-title mb48">Every angle of the market.</h2>
+      <div class="pages-grid">
+        <div class="page-card"><div class="page-card-key">F1</div><div class="page-card-name">Market</div><div class="page-card-desc">Exchange analytics, NER-VIX, capital flow, advance/decline, large trades feed</div></div>
+        <div class="page-card"><div class="page-card-key">F2</div><div class="page-card-name">Ticker</div><div class="page-card-desc">Price chart, MACD, RSI, volume, order book, risk profile, holders, recent prints</div></div>
+        <div class="page-card"><div class="page-card-key">F3</div><div class="page-card-name">Portfolio</div><div class="page-card-desc">Holdings, P&L, allocation donut, equity curve, stress test, attribution, risk</div></div>
+        <div class="page-card"><div class="page-card-key">F4</div><div class="page-card-name">Orders</div><div class="page-card-desc">Open orders, algo watchers, recent fills, execution quality, audit trail</div></div>
+        <div class="page-card"><div class="page-card-key">F5</div><div class="page-card-name">Backtest</div><div class="page-card-desc">Single/multi ticker, walk-forward, Monte Carlo 1,000 sims, param sensitivity</div></div>
+        <div class="page-card"><div class="page-card-key">F6</div><div class="page-card-name">Compare</div><div class="page-card-desc">Normalised multi-ticker price chart, rebased from selected date</div></div>
+        <div class="page-card"><div class="page-card-key">F7</div><div class="page-card-name">Watchlist</div><div class="page-card-desc">Custom watchlist with live prices, Sharpe, and volume data</div></div>
+        <div class="page-card"><div class="page-card-key">F8</div><div class="page-card-name">Heatmap</div><div class="page-card-desc">Treemap sized by market cap, coloured by % change, NER + TSE</div></div>
+        <div class="page-card"><div class="page-card-key">F9</div><div class="page-card-name">Exchange</div><div class="page-card-desc">Full exchange analytics, TSE leaderboard, sector breakdown</div></div>
+        <div class="page-card"><div class="page-card-key">F10</div><div class="page-card-name">Liquidity</div><div class="page-card-desc">Full depth curve, slippage simulator, TWAP slicer, iceberg detection</div></div>
+        <div class="page-card"><div class="page-card-key">F11</div><div class="page-card-name">Holders</div><div class="page-card-desc">HHI ranking, whale network, cross-holdings, Gini coefficient, substantial alerts</div></div>
+        <div class="page-card"><div class="page-card-key">F12</div><div class="page-card-name">Screener</div><div class="page-card-desc">Multi-factor screener — price, vol, Sharpe, RSI, ATR, market cap</div></div>
+        <div class="page-card"><div class="page-card-key">F13</div><div class="page-card-name">Alerts</div><div class="page-card-desc">Price alerts with native desktop push notifications</div></div>
+        <div class="page-card"><div class="page-card-key">F14</div><div class="page-card-name">Feed</div><div class="page-card-desc">Live trade feed across all securities, NER + TSE, filterable</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" style="background:var(--bg);padding-top:0;">
+    <div class="section-inner">
+      <div class="eyebrow">Core capabilities</div>
+      <h2 class="section-title mb48">What it actually does.</h2>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="feature-card-num">01</div><div class="feature-card-title">Live order book</div><div class="feature-card-body">Full bid/ask ladder, 10 levels each side, depth bars, spread tracking, and real-time depth chart with animated buy/sell pressure mountains.</div></div>
+        <div class="feature-card"><div class="feature-card-num">02</div><div class="feature-card-title">Monte Carlo simulation</div><div class="feature-card-body">1,000 Geometric Brownian Motion paths per run. Bear P5, median P50, bull P95. Probability of profit, drawdown risk, and full path distribution histogram.</div></div>
+        <div class="feature-card"><div class="feature-card-num">03</div><div class="feature-card-title">Holder intelligence</div><div class="feature-card-body">HHI concentration scoring, whale network map, cross-holdings detection, Gini coefficient, substantial holder alerts at ≥10%, real-time ownership changes.</div></div>
+        <div class="feature-card"><div class="feature-card-num">04</div><div class="feature-card-title">Advanced order types</div><div class="feature-card-body">Limit, market, stop-limit, trailing stop, bracket, OCO, TWAP, VWAP, iceberg, accumulate/distribute, scale trader, beta hedge, basket orders across NER and TSE.</div></div>
+        <div class="feature-card"><div class="feature-card-num">05</div><div class="feature-card-title">Risk analytics</div><div class="feature-card-body">Portfolio VaR 95%/99%, CVaR, Sharpe, Sortino, Calmar, max drawdown, rolling beta, correlation matrix, attribution, stress testing, and Brinson decomposition.</div></div>
+        <div class="feature-card"><div class="feature-card-num">06</div><div class="feature-card-title">Keyboard command line</div><div class="feature-card-body">CMD&gt; command line for power users. TICKER, B/S commands, CMP for comparison, W+/W− for watchlist, F-key navigation — all without touching the mouse.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact-strip">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="contact-eyebrow">Get started today</div>
+        <div class="contact-title">R$2,500 / month.<br>Set up in minutes.</div>
+        <div class="contact-body">Connect your NER account with <strong>/passcode</strong> in the NER Discord. Portfolio, orders, and live data — all in one place immediately.</div>
+      </div>
+      <div class="contact-actions">
+        <a href="https://bt-retail.up.railway.app" target="_blank" class="btn btn-orange">Open Terminal →</a>
+        <a class="contact-sub">DM @beeple02 to get access</a>
+      </div>
+    </div>
+  </div>
+  <div id="footer-terminal"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: ENTERPRISE
+═══════════════════════════════════════════════════ -->
+<div id="page-enterprise" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span>
+    <a onclick="nav('products')">Products</a><span class="sep">/</span>
+    <span class="current">Bloomberg Enterprise</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp. <span class="sep">·</span> Bloomberg Enterprise</div>
+      <h1 class="product-hero-headline">Institutional <span>portfolio<br>management.</span></h1>
+      <p class="product-hero-body">Multi-portfolio management, client CMS, firm-level analytics, compliance monitoring, and billing infrastructure — everything a DC trading firm needs in one platform.</p>
+      <div class="product-hero-actions">
+        <a onclick="nav('contact')" class="btn btn-orange">Contact sales →</a>
+        <a onclick="nav('terminal')" class="btn btn-outline-white">See Terminal first</a>
+      </div>
+      <div class="product-hero-price mt24">R$10,000 / month · Multi-portfolio · Client CMS · Firm dashboard</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="eyebrow">Three spaces</div>
+      <h2 class="section-title mb48">Everything your firm needs.</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-card-num">Portfolio Space</div>
+          <div class="feature-card-title">19 sub-tabs per portfolio</div>
+          <div class="feature-card-body">Overview, positions, analytics, risk, benchmark, attribution, stress test, realized P&L, target allocation, report, cash log, audit log, dividends, drawdown, rolling beta, scenarios, VaR backtest, tearsheet, and snapshots.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-num">Client Management</div>
+          <div class="feature-card-title">Full CMS for your clients</div>
+          <div class="feature-card-body">Client profiles, mandate tracking (max position %, allowed exchanges, excluded tickers, min cash buffer), timestamped PM notes log, shareable read-only portal, and portfolio linking.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-num">Firm Dashboard</div>
+          <div class="feature-card-title">12 firm-level tabs</div>
+          <div class="feature-card-body">Morning brief, AUM overview, cross-portfolio risk, rebalancing queue, client reviews, realized P&L, attribution, model portfolio, compliance flags, revenue tracking, billing, and firm settings.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--bg);padding-top:0;">
+    <div class="section-inner">
+      <div class="eyebrow">Morning brief</div>
+      <h2 class="section-title mb16">Start every day informed.</h2>
+      <p class="section-body">The firm dashboard opens to the morning brief by default — overdue client reviews, compliance flags, portfolios needing rebalancing, and the day's top movers. All in one view, before you touch a single position.</p>
+      <div class="compliance-note">
+        <div class="compliance-note-title">Compliance built in</div>
+        <div class="compliance-note-body">
+          Enterprise automatically flags positions exceeding mandate limits, HHI concentration breaches (max configurable), idle cash beyond threshold, and overdue client reviews. Compliance flags reference firm settings thresholds and surface directly in the morning brief. Bloomberg Corp. products do not facilitate and expressly disclaim any activity in violation of the Commercial Standards Act of the Commonwealth of Redmont, including market manipulation (Part VII §2), insider trading (Part VII §3), or fraud (Part VII §7).
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact-strip">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="contact-eyebrow">Enterprise access</div>
+        <div class="contact-title">R$10,000 / month.<br>Built for firms.</div>
+        <div class="contact-body">Enterprise is available by arrangement. DM <strong>@beeple02</strong> on Discord with a description of your firm size, portfolio count, and use case.</div>
+      </div>
+      <div class="contact-actions">
+        <a class="btn btn-orange">Contact @beeple02 →</a>
+        <a onclick="nav('terminal')" class="contact-sub">Start with Retail Terminal</a>
+      </div>
+    </div>
+  </div>
+  <div id="footer-enterprise"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: ATLAS
+═══════════════════════════════════════════════════ -->
+<div id="page-atlas" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span>
+    <a onclick="nav('products')">Products</a><span class="sep">/</span>
+    <span class="current">Bloomberg Atlas</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp. <span class="sep">·</span> Bloomberg Atlas</div>
+      <h1 class="product-hero-headline">The NER + TSE<br><span>data layer.</span></h1>
+      <p class="product-hero-body">Direct REST API access to all NER and TSE market data. Built for developers and quants who need structured market data without the terminal interface.</p>
+      <div class="product-hero-actions">
+        <a onclick="nav('contact')" class="btn btn-orange">Request API access →</a>
+      </div>
+      <div class="product-hero-price mt24">R$12,500 / month · REST API · Tick data · Full history</div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--bg);">
+    <div class="section-inner">
+      <div class="eyebrow">API reference — sample calls</div>
+      <h2 class="section-title sm mb32">Clean, consistent REST endpoints.</h2>
+      <div class="api-mock">
+        <div class="api-comment"># Public endpoints (no auth required)</div>
+        <div style="margin-bottom:16px">
+          <span class="api-method">GET </span><span class="api-path">https://atlas-production-1438.up.railway.app/securities</span>
+          <div class="api-response">
+            <span class="api-key">"ticker"</span>: <span class="api-val str">"SRI"</span> &nbsp;
+            <span class="api-key">"name"</span>: <span class="api-val str">"Redmont Securities Inc."</span> &nbsp;
+            <span class="api-key">"exchange"</span>: <span class="api-val str">"NER"</span>
+          </div>
+        </div>
+        <div style="margin-bottom:16px">
+          <span class="api-method">GET </span><span class="api-path">/analytics/ohlcv/{ticker}?period=30D</span>
+          <div class="api-response">
+            <span class="api-key">"open"</span>: <span class="api-val num">30.53</span> &nbsp;
+            <span class="api-key">"high"</span>: <span class="api-val num">31.20</span> &nbsp;
+            <span class="api-key">"low"</span>: <span class="api-val num">18.90</span> &nbsp;
+            <span class="api-key">"close"</span>: <span class="api-val num">19.08</span> &nbsp;
+            <span class="api-key">"volume"</span>: <span class="api-val num">82</span>
+          </div>
+        </div>
+        <div class="api-comment"># Authenticated (X-API-Key required)</div>
+        <div>
+          <span class="api-method">GET </span><span class="api-path">/orderbook/{ticker}</span>
+          <div class="api-response">
+            <span class="api-key">"bids"</span>: [{<span class="api-key">"price"</span>: <span class="api-val num">18.50</span>, <span class="api-key">"qty"</span>: <span class="api-val num">580</span>}] &nbsp;
+            <span class="api-key">"asks"</span>: [{<span class="api-key">"price"</span>: <span class="api-val num">19.00</span>, <span class="api-key">"qty"</span>: <span class="api-val num">616</span>}]
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="eyebrow">What's included</div>
+      <h2 class="section-title mb48">Full data coverage.</h2>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="feature-card-num">01</div><div class="feature-card-title">Securities & Prices</div><div class="feature-card-body">All 17 NER and TSE securities with live price, market cap, volume, and exchange metadata. Public, no auth required.</div></div>
+        <div class="feature-card"><div class="feature-card-num">02</div><div class="feature-card-title">OHLCV & Tick Data</div><div class="feature-card-body">Full OHLCV history by period (1D, 7D, 30D, 90D, 180D, 1Y) and raw tick data for all securities on both exchanges.</div></div>
+        <div class="feature-card"><div class="feature-card-num">03</div><div class="feature-card-title">Order Book Snapshots</div><div class="feature-card-body">Full order book depth, all bid/ask levels, spread data, imbalance scores, and wall detection — authenticated.</div></div>
+        <div class="feature-card"><div class="feature-card-num">04</div><div class="feature-card-title">Shareholder Data</div><div class="feature-card-body">Full shareholder tables with quantities, cost basis, HHI concentration scores, and Gini coefficients per security.</div></div>
+        <div class="feature-card"><div class="feature-card-num">05</div><div class="feature-card-title">Trade History</div><div class="feature-card-body">Complete trade feed with timestamps, price, quantity, side classification, and session-level aggregates.</div></div>
+        <div class="feature-card"><div class="feature-card-num">06</div><div class="feature-card-title">Portfolio & Orders</div><div class="feature-card-body">Authenticated access to portfolio positions, open orders, transaction history, and fund balances via passcode flow.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact-strip">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="contact-eyebrow">API access</div>
+        <div class="contact-title">R$12,500 / month.<br>For developers and quants.</div>
+        <div class="contact-body">Atlas access is by arrangement. DM <strong>@beeple02</strong> on Discord with your use case and what data you need.</div>
+      </div>
+      <div class="contact-actions">
+        <a class="btn btn-orange">Contact @beeple02 →</a>
+      </div>
+    </div>
+  </div>
+  <div id="footer-atlas"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: NEWS
+═══════════════════════════════════════════════════ -->
+<div id="page-news" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span>
+    <a onclick="nav('products')">Products</a><span class="sep">/</span>
+    <span class="current">Bloomberg News</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp. <span class="sep">·</span> Bloomberg News</div>
+      <h1 class="product-hero-headline">DC markets.<br><span>Reported daily.</span></h1>
+      <p class="product-hero-body">Bloomberg's editorial division. Daily market recaps, breaking news on NER and TSE securities, earnings coverage, and macroeconomic commentary on the Commonwealth of Redmont.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="eyebrow">Latest coverage</div>
+      <h2 class="section-title mb32">Recent dispatches.</h2>
+      <div class="article-list">
+        <div class="article-row">
+          <div class="article-date">Mar 23</div>
+          <div class="article-title">SRI falls 37.5% — what happened to Redmont Securities Inc. and what comes next</div>
+          <div class="article-tag">Markets</div>
+        </div>
+        <div class="article-row">
+          <div class="article-date">Mar 22</div>
+          <div class="article-title">BB posts 31% gain as Brickand and Brew outperforms on volume — full session recap</div>
+          <div class="article-tag">Equities</div>
+        </div>
+        <div class="article-row">
+          <div class="article-date">Mar 22</div>
+          <div class="article-title">NER-VIX closes at 318.99 — volatility index hits cycle high amid broad market dislocation</div>
+          <div class="article-tag">Volatility</div>
+        </div>
+        <div class="article-row">
+          <div class="article-date">Mar 21</div>
+          <div class="article-title">RTG Rhinestone Tw. extends streak — 4.55% gain as momentum carries into third session</div>
+          <div class="article-tag">Markets</div>
+        </div>
+        <div class="article-row">
+          <div class="article-date">Mar 21</div>
+          <div class="article-title">GCC GlobalCenter drops 8.57% — concentration risk flags triggered across three portfolios</div>
+          <div class="article-tag">Risk</div>
+        </div>
+        <div class="article-row">
+          <div class="article-date">Mar 20</div>
+          <div class="article-title">Weekly market summary — NER exchange performance, top movers, capital flow breakdown</div>
+          <div class="article-tag">Weekly Recap</div>
+        </div>
+        <div class="article-row">
+          <div class="article-date">Mar 19</div>
+          <div class="article-title">NTR Netherste holds at R$125.00 — zero-change session raises questions about liquidity depth</div>
+          <div class="article-tag">Liquidity</div>
+        </div>
+        <div class="article-row">
+          <div class="article-date">Mar 18</div>
+          <div class="article-title">RDS +0.72% — Redmont Dollar Services remains steady as broader market sees elevated volatility</div>
+          <div class="article-tag">Markets</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="footer-news"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: ORIGINALS
+═══════════════════════════════════════════════════ -->
+<div id="page-originals" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span>
+    <a onclick="nav('products')">Products</a><span class="sep">/</span>
+    <span class="current">Bloomberg Originals</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp. <span class="sep">·</span> Bloomberg Originals</div>
+      <h1 class="product-hero-headline">Long-form.<br><span>Deep research.</span></h1>
+      <p class="product-hero-body">Bloomberg Originals publishes in-depth company deep-dives, sector analysis, market structure essays, and investigative financial journalism on DC's most significant securities and economic events.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="eyebrow">Originals — Published research</div>
+      <h2 class="section-title mb32">Recent deep-dives.</h2>
+      <div class="article-list">
+        <div class="article-row" style="grid-template-columns:80px 1fr 200px;">
+          <div class="article-date">Mar 2026</div>
+          <div class="article-title">The anatomy of SRI's collapse — a full reconstruction of how Redmont Securities Inc. lost 37.5% and what it means for DC market structure</div>
+          <div class="article-tag">Company Deep-Dive</div>
+        </div>
+        <div class="article-row" style="grid-template-columns:80px 1fr 200px;">
+          <div class="article-date">Mar 2026</div>
+          <div class="article-title">HHI concentration across NER — which securities are dominated by a handful of holders, and what the data reveals about systemic risk</div>
+          <div class="article-tag">Market Structure</div>
+        </div>
+        <div class="article-row" style="grid-template-columns:80px 1fr 200px;">
+          <div class="article-date">Feb 2026</div>
+          <div class="article-title">GCC at R$2.00 — from R$21 to R$2 in one cycle: a documented reconstruction of GlobalCenter's devaluation</div>
+          <div class="article-tag">Company Deep-Dive</div>
+        </div>
+        <div class="article-row" style="grid-template-columns:80px 1fr 200px;">
+          <div class="article-date">Feb 2026</div>
+          <div class="article-title">Whale networks on NER — mapping cross-holdings, identifying dominant holders, and quantifying systemic ownership concentration</div>
+          <div class="article-tag">Investigative</div>
+        </div>
+        <div class="article-row" style="grid-template-columns:80px 1fr 200px;">
+          <div class="article-date">Jan 2026</div>
+          <div class="article-title">The DC economic cycle explained — how one month of DC time maps to trading cadence, fee structures, and portfolio strategy</div>
+          <div class="article-tag">Economics</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="footer-originals"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: LABS
+═══════════════════════════════════════════════════ -->
+<div id="page-labs" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span>
+    <a onclick="nav('products')">Products</a><span class="sep">/</span>
+    <span class="current">Bloomberg Labs</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp. <span class="sep">·</span> Bloomberg Labs</div>
+      <h1 class="product-hero-headline">We build<br><span>everything.</span></h1>
+      <p class="product-hero-body">Bloomberg Labs is the internal software engineering division that designs, builds, and maintains all Bloomberg Corp. products. From the Terminal to Atlas, everything runs on Labs infrastructure.</p>
+      <div class="product-hero-price mt24" style="color:#333">Internal division — not a public-facing product</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="eyebrow">What Labs builds and maintains</div>
+      <h2 class="section-title mb48">The stack behind Bloomberg.</h2>
+      <div class="labs-grid">
+        <div class="labs-card">
+          <div class="labs-card-tag">Frontend</div>
+          <div class="labs-card-title">Terminal interface</div>
+          <div class="labs-card-body">The full Bloomberg Terminal UI — 14 pages of live data, order entry, charts, heatmap, and portfolio management. Built in HTML, CSS, and JavaScript with server-sent events for real-time data streaming.</div>
+        </div>
+        <div class="labs-card">
+          <div class="labs-card-tag">Backend</div>
+          <div class="labs-card-title">Flask API layer</div>
+          <div class="labs-card-body">3,500+ line Flask application serving all Terminal and Enterprise routes. Handles NER passcode authentication, TSE order routing via Atlas proxy, SSE streaming, and all enterprise data persistence.</div>
+        </div>
+        <div class="labs-card">
+          <div class="labs-card-tag">Analytics</div>
+          <div class="labs-card-title">Quant engine</div>
+          <div class="labs-card-body">Pure Python quantitative utilities — SMA, EMA, RSI, ATR, Bollinger Bands, MACD, Sharpe, Sortino, Calmar, VaR, CVaR, rolling beta, Brinson attribution, Monte Carlo simulation, and Kupiec backtesting.</div>
+        </div>
+        <div class="labs-card">
+          <div class="labs-card-tag">Infrastructure</div>
+          <div class="labs-card-title">Railway deployment</div>
+          <div class="labs-card-body">Two Railway services — retail and enterprise — with persistent Volume storage for enterprise state. Real-time NER webhook receiver and SSE stream serving all connected browser clients simultaneously.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div id="footer-labs"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE: ABOUT
+═══════════════════════════════════════════════════ -->
+<div id="page-about" class="page page-content">
+  <div class="breadcrumb">
+    <a onclick="nav('home')">Home</a><span class="sep">/</span>
+    <span class="current">About</span>
+  </div>
+  <section class="product-hero">
+    <div class="product-hero-inner">
+      <div class="product-hero-eyebrow">Bloomberg Corp.</div>
+      <h1 class="product-hero-headline">The DC market's<br><span>data company.</span></h1>
+      <p class="product-hero-body">Bloomberg Corp. was founded with one objective: give DC market participants the tools, data, and infrastructure that serious financial markets require. Not spreadsheets. Not Discord tabs. A real terminal.</p>
+    </div>
+  </section>
+
+  <div class="about-split">
+    <div class="about-text">
+      <div class="eyebrow mb16">Our mission</div>
+      <h2 class="section-title sm mb24">Why Bloomberg Corp. exists.</h2>
+      <p style="font-family:var(--sans);font-size:16px;color:var(--muted);line-height:1.85;margin-bottom:20px;">The DC market — NER and TSE — runs on real capital, real trades, and real price discovery. But for a long time, participants operated without proper infrastructure. No institutional-grade charting. No order book depth. No portfolio analytics. No backtest engine.</p>
+      <p style="font-family:var(--sans);font-size:16px;color:var(--muted);line-height:1.85;margin-bottom:20px;">Bloomberg Corp. was built to close that gap. The Terminal gives individual traders tools equivalent to what institutional desks use in real markets. Enterprise gives portfolio managers the infrastructure to run client money professionally. Atlas gives developers the raw data layer to build on top of.</p>
+      <p style="font-family:var(--sans);font-size:16px;color:var(--muted);line-height:1.85;">Bloomberg News and Bloomberg Originals exist because data alone isn't enough — context, analysis, and editorial judgment matter too. The full picture requires both.</p>
+    </div>
+    <div class="about-stat-block">
+      <div class="about-stat-item">
+        <div class="about-stat-num">14<span>.</span></div>
+        <div class="about-stat-label">Terminal pages covering every angle of the market</div>
+      </div>
+      <div class="about-stat-item">
+        <div class="about-stat-num">17<span>.</span></div>
+        <div class="about-stat-label">Securities tracked across NER and TSE</div>
+      </div>
+      <div class="about-stat-item">
+        <div class="about-stat-num">1,000<span>.</span></div>
+        <div class="about-stat-label">Monte Carlo simulations per backtest run</div>
+      </div>
+      <div class="about-stat-item">
+        <div class="about-stat-num">6<span>.</span></div>
+        <div class="about-stat-label">Bloomberg Corp. divisions</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section" style="background:var(--bg);">
+    <div class="section-inner">
+      <div class="eyebrow">Legal & compliance</div>
+      <h2 class="section-title sm mb24">Operating within DC law.</h2>
+      <div class="compliance-note">
+        <div class="compliance-note-title">Disclaimer — Commonwealth of Redmont</div>
+        <div class="compliance-note-body">
+          Bloomberg Corp. is a private company registered and operating within the Commonwealth of Redmont under applicable DC law. All financial data, analytics, and tools provided are for informational and analytical purposes only and do not constitute financial advice, investment recommendations, or solicitations to trade.<br><br>
+          Bloomberg Corp. operates in full compliance with the Criminal Code Act of the Commonwealth of Redmont, including the Commercial Standards Act. Users are advised that market manipulation (Part VII §2), insider trading (Part VII §3), fraud (Part VII §7), false advertising (Part VII §11), and misleading advertising (Part VII §12) are indictable offences under DC law carrying penalties of up to 100 Penalty Units and imprisonment. Bloomberg Corp. does not facilitate, endorse, or support any activity in violation of applicable Redmont law.<br><br>
+          All trading conducted through Bloomberg Terminal is the sole responsibility of the account holder. Bloomberg Corp., Bloomberg Labs, Bloomberg News, and Bloomberg Originals are internal divisions of Bloomberg Corp. and are not separately incorporated entities. bloomberg.demcraft.site is operated by Bloomberg Corp. and is not affiliated with Bloomberg L.P. or any real-world financial institution.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact-strip">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <div class="contact-eyebrow">Get in touch</div>
+        <div class="contact-title">Questions or enquiries?</div>
+        <div class="contact-body">Reach Bloomberg Corp. directly on Discord. DM <strong>@beeple02</strong> for all product, pricing, and access enquiries.</div>
+      </div>
+      <div class="contact-actions">
+        <a href="https://bt-retail.up.railway.app" target="_blank" class="btn btn-orange">Open Terminal →</a>
+        <a class="contact-sub">DM @beeple02 on Discord</a>
+      </div>
+    </div>
+  </div>
+  <div id="footer-about"></div>
+</div>
+
+<!-- FOOTER TEMPLATE (injected into each page) -->
+<template id="footer-template">
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand">Bloomberg<span>.</span></div>
+          <div class="footer-desc">Bloomberg Corp. builds and operates financial data, analytics, media, and trading infrastructure serving the NER and TSE exchanges across the Commonwealth of Redmont.</div>
+        </div>
+        <div>
+          <div class="footer-col-title">Products</div>
+          <ul class="footer-links-list">
+            <li><a onclick="nav('terminal')">Bloomberg Terminal</a></li>
+            <li><a onclick="nav('enterprise')">Bloomberg Enterprise</a></li>
+            <li><a onclick="nav('atlas')">Bloomberg Atlas API</a></li>
+            <li><a onclick="nav('news')">Bloomberg News</a></li>
+            <li><a onclick="nav('originals')">Bloomberg Originals</a></li>
+            <li><a onclick="nav('labs')">Bloomberg Labs</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links-list">
+            <li><a onclick="nav('about')">About Bloomberg Corp.</a></li>
+            <li><a onclick="nav('products')">All Products</a></li>
+            <li><a href="https://bt-retail.up.railway.app" target="_blank">Terminal Login</a></li>
+            <li><a href="https://www.democracycraft.net" target="_blank">DemocracyCraft</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Legal</div>
+          <ul class="footer-links-list">
+            <li><a href="https://www.democracycraft.net/threads/laws.5/" target="_blank">DC Criminal Code</a></li>
+            <li><a href="https://www.democracycraft.net/threads/commercial-standards-act.19886/" target="_blank">Commercial Standards Act</a></li>
+            <li><span>bloomberg.demcraft.site</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-disclaimer">
+        <b>Legal disclaimer —</b> Bloomberg Corp. is registered in the Commonwealth of Redmont. All data and tools are for informational purposes only and do not constitute financial advice. Bloomberg Corp. operates in compliance with the Commercial Standards Act. Market manipulation (Part VII §2), insider trading (Part VII §3), and fraud (Part VII §7) are indictable offences under DC law. All trading is the sole responsibility of the account holder. Not affiliated with Bloomberg L.P.
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© Bloomberg Corp. — Commonwealth of Redmont · bloomberg.demcraft.site</div>
+        <div class="footer-bottom-links">
+          <a href="https://www.democracycraft.net/threads/laws.5/" target="_blank">DC Laws</a>
+          <a onclick="nav('about')">About</a>
+          <a onclick="nav('products')">Products</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<script>
+// ── ROUTING ──
+const pages = ['home','products','terminal','enterprise','atlas','news','originals','labs','about'];
+const navMap = {
+  'home':       'Home',
+  'products':   'Products',
+  'terminal':   'Terminal',
+  'enterprise': 'Enterprise',
+  'atlas':      'Atlas API',
+  'news':       'News',
+  'originals':  'Originals',
+  'labs':       'Labs',
+  'about':      'About',
+  'contact':    null // scrolls to contact section on home
+};
+
+function nav(page) {
+  if (page === 'contact') {
+    nav('home');
+    setTimeout(() => {
+      document.getElementById('contact-home')?.scrollIntoView({behavior:'smooth'});
+    }, 80);
+    return;
+  }
+
+  // hide all pages
+  pages.forEach(p => {
+    document.getElementById('page-' + p)?.classList.remove('active');
+  });
+
+  // show target
+  const el = document.getElementById('page-' + page);
+  if (el) {
+    el.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // update nav link active states
+  document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(a => {
+    if (a.textContent.trim().toLowerCase().includes(navMap[page]?.toLowerCase() || '___')) {
+      a.classList.add('active');
+    }
+  });
+
+  // update page title
+  document.title = page === 'home'
+    ? 'Bloomberg Corp. — Redmont'
+    : navMap[page] + ' — Bloomberg Corp.';
+}
+
+// ── INJECT FOOTERS ──
+function injectFooters() {
+  const template = document.getElementById('footer-template');
+  pages.forEach(p => {
+    const el = document.getElementById('footer-' + p);
+    if (el && template) {
+      el.appendChild(template.content.cloneNode(true));
+    }
+  });
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  injectFooters();
+  nav('home');
+});
+</script>
+</body>
+</html>
